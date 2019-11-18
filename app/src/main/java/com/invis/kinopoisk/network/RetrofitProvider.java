@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public final class RetrofitProvider {
 
-    private static final String BASE_URL = "https://pokeapi.co/api/v2/";
+    private static final String BASE_URL = "https://s3-eu-west-1.amazonaws.com/sequeniatesttask/";
 
     private final Retrofit retrofit;
 
