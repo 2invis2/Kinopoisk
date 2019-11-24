@@ -8,6 +8,7 @@ import com.invis.kinopoisk.features.data.KinopoiskRepository;
 import com.invis.kinopoisk.features.data.KinopoiskRepositoryImpl;
 import com.invis.kinopoisk.features.domain.KinopoiskInteractor;
 import com.invis.kinopoisk.features.domain.KinopoiskInteractorImpl;
+import com.invis.kinopoisk.features.presenter.list.FilmsListPresenter;
 
 final class KinopoiskPresenterFactory {
 
@@ -18,7 +19,8 @@ final class KinopoiskPresenterFactory {
 
         final KinopoiskRepository repository = new KinopoiskRepositoryImpl(api);
         final KinopoiskInteractor interactor = new KinopoiskInteractorImpl(repository);
+        final FilmsListPresenter filmsListPresenter = new FilmsListPresenter(interactor);
 
-        return new KinopoiskPresenter(interactor);
+        return new KinopoiskPresenter(interactor, filmsListPresenter);
     }
 }
