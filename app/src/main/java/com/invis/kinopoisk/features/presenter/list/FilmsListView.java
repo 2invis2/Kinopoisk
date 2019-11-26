@@ -7,7 +7,11 @@ import java.util.List;
 
 public interface FilmsListView extends MvpView {
 
-    void showFilmList(List<Film> filmList);
+    void showProgress();
+
+    void hideProgress();
+
+    void showGeners(List<Film> filmList);
 
     void addFilmList(List<Film> filmList);
 

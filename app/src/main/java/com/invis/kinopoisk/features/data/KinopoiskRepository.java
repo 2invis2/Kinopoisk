@@ -5,5 +5,5 @@ import com.invis.kinopoisk.network.Carry;
 
 public interface KinopoiskRepository {
 
-    public void loadFilmList (Carry<ListFilm> carry);
+    void loadFilmList (Carry<ListFilm> carry);
 }

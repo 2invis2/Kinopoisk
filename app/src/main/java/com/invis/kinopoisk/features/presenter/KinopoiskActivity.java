@@ -7,17 +7,17 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 
 import com.invis.kinopoisk.R;
+import com.invis.kinopoisk.features.Entity.Film;
+import com.invis.kinopoisk.features.presenter.description.DescriptionFragment;
 import com.invis.kinopoisk.features.presenter.list.FilmsListFragment;
 
 public class KinopoiskActivity extends BaseActivity implements KinopoiskView{
 
     private KinopoiskPresenter kinopoiskPresenter;
 
+    private Fragment filmsListFragment;
+    private Fragment descriptionFragment;
     private Toolbar toolbar;
-
-    private FragmentManager fragmentManager;
-    private FragmentTransaction fragmentTransaction;
-    private Fragment fragment;
 
 
     @Override
@@ -36,48 +36,50 @@ public class KinopoiskActivity extends BaseActivity implements KinopoiskView{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kinopoisk);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        /*toolbar = (Toolbar) findViewById(R.id.toolbar_list_film);
         if (toolbar != null){
             setSupportActionBar(toolbar);
-        }
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }*/
 
-        fragmentManager = getSupportFragmentManager();
-        fragmentTransaction = fragmentManager.beginTransaction();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        fragment = new FilmsListFragment();
-        ((FilmsListFragment) fragment).setPresenter(kinopoiskPresenter.getFilmsListPresenter());
-        fragmentTransaction.add(R.id.container, fragment);
-        fragmentTransaction.commit();
+        filmsListFragment = new FilmsListFragment();
+        ((FilmsListFragment) filmsListFragment).setPresenter(kinopoiskPresenter.getFilmsListPresenter());
+        fragmentTransaction.add(R.id.container, filmsListFragment)
+                .addToBackStack(null)
+                .commit();
 
-        /**<DrawerLayout>*/
-        /*DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
 
-        CharSequence  mDrawerTitle = getTitle();
-        DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                R.string.nav_header_desc, R.string.nav_header_desc) {
-            @Override
-            public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
-                invalidateOptionsMenu();
-            }
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                invalidateOptionsMenu();
-            }
-        };
-
-        mDrawerLayout.setDrawerListener(mDrawerToggle);*/
     }
 
     @Override
     protected void onStart(){
         super.onStart();
+    }
+
+
+
+    @Override
+    public void onFilmSelect(Film film) {
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        descriptionFragment = DescriptionFragment.newInstance(film);
+
+        fragmentTransaction.add(R.id.container, descriptionFragment)
+                .addToBackStack("kinopoisk")
+                .commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.popBackStack("kinopoisk", 0);
     }
 
 
