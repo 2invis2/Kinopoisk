@@ -11,4 +11,6 @@ public interface KinopoiskInteractor {
     void loadFilmList (Carry<ListFilm> carry);
 
     List<String> getGeners (List<Film> filmList);
+
+    List<Film> selectGeners (List<Film> filmList, List<String> checkGeners);
 }

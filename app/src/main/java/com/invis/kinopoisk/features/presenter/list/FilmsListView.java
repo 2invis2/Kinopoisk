@@ -15,5 +15,7 @@ public interface FilmsListView extends MvpView {
 
     void addFilmList(List<Film> filmList);
 
+    void refreshFilmList(List<Film> filmList);
+
     void showError(String message);
 }

@@ -11,6 +11,8 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 
+import static com.invis.kinopoisk.exception.ExceptionConst.REFRESH_NULL;
+
 @AllArgsConstructor
 public class FilmsListPresenter extends MvpPresenter<FilmsListView> {
 
@@ -41,5 +43,14 @@ public class FilmsListPresenter extends MvpPresenter<FilmsListView> {
 
     public List<String> getGeners(List<Film> filmList) {
         return kinopoiskInteractor.getGeners(filmList);
+    }
+
+    public void selectGeners(List<Film> filmList, List<String> chekedTextView) {
+        List<Film> refreshFilm = kinopoiskInteractor.selectGeners(filmList, chekedTextView);
+        if(refreshFilm != null){
+            view.refreshFilmList(refreshFilm);
+        } else {
+            view.showError(REFRESH_NULL);
+        }
     }
 }

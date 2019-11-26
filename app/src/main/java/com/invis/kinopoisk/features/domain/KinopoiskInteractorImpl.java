@@ -37,4 +37,24 @@ public class KinopoiskInteractorImpl implements KinopoiskInteractor{
 
         return geners;
     }
+
+    @Override
+    public List<Film> selectGeners(List<Film> filmList, List<String> checkGeners) {
+        List<Film> newSelectGeners = new ArrayList<>();
+
+        for(int i = 0; i < filmList.size(); i++){
+            for(int j = 0; j < checkGeners.size(); j++){
+
+                if( filmList.get(i).getGenres().contains(checkGeners.get(j)) ){
+                    if( !(newSelectGeners.contains(filmList.get(i))))
+                    newSelectGeners.add(filmList.get(i));
+                }
+
+            }
+        }
+
+        return newSelectGeners;
+    }
+
+
 }

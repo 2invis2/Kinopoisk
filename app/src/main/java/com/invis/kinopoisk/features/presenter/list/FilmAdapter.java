@@ -61,6 +61,12 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmHolder> {
         notifyDataSetChanged();
     }
 
+    public void refreshFilms(List<Film> filmList) {
+        films.clear();
+        films.addAll(filmList);
+        notifyDataSetChanged();
+    }
+
     public List<Film> getFilms(){
         return films;
     }

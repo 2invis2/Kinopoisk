@@ -12,9 +12,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.invis.kinopoisk.R;
 import com.invis.kinopoisk.features.Entity.Film;
@@ -33,7 +33,8 @@ public class FilmsListFragment extends Fragment implements FilmsListView{
     private View content;
     private Toolbar toolbar;
     private List<String> genersList;
-    private List<CheckBox> genersListCheckBox;
+    private List<TextView> genersListTexView;
+    private List<Film> fulFilmList;
 
     public void setPresenter(FilmsListPresenter presenter){
         filmsListPresenter = presenter;
@@ -129,30 +130,53 @@ public class FilmsListFragment extends Fragment implements FilmsListView{
     public void showGeners(List<Film> filmList){
         genersList = filmsListPresenter.getGeners(filmList);
 
-        genersListCheckBox = new ArrayList<CheckBox>();
+        genersListTexView = new ArrayList<TextView>();
 
         LinearLayout containerLayout = (LinearLayout) getActivity().findViewById(R.id.container_drawer);
 
         for(int i = 0; i < genersList.size(); i++){
 
-            genersListCheckBox.add(new CheckBox(getActivity()));
+            genersListTexView.add(new TextView(getActivity()));
 
-            genersListCheckBox.get(i).setText(genersList.get(i));
-            genersListCheckBox.get(i).setChecked(false);
+            //genersListTexView.get(i).setPadding(5,5,5,5);
+            genersListTexView.get(i).setText(genersList.get(i));
+            genersListTexView.get(i).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    for (int i = 0; i < genersListTexView.size(); i++) {
+                        genersListTexView.get(i).setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    }
+
+                    view.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+
+                    List<String> viewGeners = new ArrayList<String>();
+                    viewGeners.add(((TextView) view).getText().toString());
+
+                    filmsListPresenter.selectGeners(fulFilmList, viewGeners);
+                    //adapter.refreshFilms(fulFilmList);
+                }
+
+                });
 
             LinearLayout.LayoutParams checkBoxLayoutParams = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
-            genersListCheckBox.get(i).setLayoutParams(checkBoxLayoutParams);
+            genersListTexView.get(i).setLayoutParams(checkBoxLayoutParams);
 
-            containerLayout.addView(genersListCheckBox.get(i));
+            containerLayout.addView(genersListTexView.get(i));
         }
 
     }
 
     @Override
     public void addFilmList(List<Film> filmList) {
+        fulFilmList = filmList;
         adapter.addFilms(filmList);
+    }
+
+    @Override
+    public void refreshFilmList(List<Film> filmList){
+        adapter.refreshFilms(filmList);
     }
 
     @Override
