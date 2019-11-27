@@ -7,4 +7,6 @@
 
     <string name="year">Год:\u0020</string>
     <string name="rating">Рейтинг:\u0020</string>
+
+    <string name="geners">Жанры</string>
 </resources>

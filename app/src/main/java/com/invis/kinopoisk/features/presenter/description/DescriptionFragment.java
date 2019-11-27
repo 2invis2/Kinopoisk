@@ -1,16 +1,9 @@
 package com.invis.kinopoisk.features.presenter.description;
 
-import android.os.Build;
 import android.os.Bundle;
-import android.support.transition.ChangeBounds;
-import android.support.transition.ChangeImageTransform;
-import android.support.transition.ChangeTransform;
-import android.support.transition.Slide;
-import android.support.transition.TransitionSet;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +21,7 @@ public class DescriptionFragment extends Fragment implements DescriptionView {
     private View content;
 
     private ImageView imageDescription;
+    private TextView localizedNameDescription;
     private TextView nameDescription;
     private TextView yearDescription;
     private TextView ratingDescription;
@@ -49,20 +43,6 @@ public class DescriptionFragment extends Fragment implements DescriptionView {
 
         film = getArguments().getParcelable("filmSelected");
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            this.setSharedElementEnterTransition(new DetailsTransition());
-            this.setEnterTransition(new Slide(Gravity.RIGHT));
-            this.setSharedElementReturnTransition(new DetailsTransition());
-        }
-    }
-
-    public class DetailsTransition extends TransitionSet {
-        public DetailsTransition() {
-            setOrdering(ORDERING_TOGETHER);
-            addTransition(new ChangeBounds()).
-                    addTransition(new ChangeTransform()).
-                    addTransition(new ChangeImageTransform());
-        }
     }
 
     @Override
@@ -88,7 +68,6 @@ public class DescriptionFragment extends Fragment implements DescriptionView {
         showFilm();
 
         return content;
-
     }
 
     protected DescriptionView getMvpView(){
@@ -102,27 +81,28 @@ public class DescriptionFragment extends Fragment implements DescriptionView {
     @Override
     public void showFilm() {
         imageDescription = (ImageView) content.findViewById(R.id.image_description);
+        localizedNameDescription = (TextView) content.findViewById(R.id.localized_name_description);
         nameDescription = (TextView) content.findViewById(R.id.name_description);
         yearDescription = (TextView) content.findViewById(R.id.year_description);
         ratingDescription = (TextView) content.findViewById(R.id.rating_description);
         textDescription = (TextView) content.findViewById(R.id.text_description);
 
-        Picasso.get()
-                .load(film.getImage_url())
-                .placeholder(R.drawable.film_placeholder)
-                .error(R.drawable.film_placeholder_error)
-                .into(imageDescription);
+        if(film.getImage_url() != null) {
+            Picasso.get()
+                    .load(film.getImage_url())
+                    .placeholder(R.drawable.film_placeholder)
+                    .error(R.drawable.film_placeholder_error)
+                    .into(imageDescription);
+        } else {
+            imageDescription.setImageResource(R.drawable.film_placeholder_error);
+        }
 
+        localizedNameDescription.setText(film.getLocalized_name());
         nameDescription.setText(film.getName());
         yearDescription.setText(R.string.year);
         yearDescription.setText(yearDescription.getText() + String.valueOf(film.getYear()));
         ratingDescription.setText(R.string.rating);
         ratingDescription.setText(ratingDescription.getText() + String.valueOf(film.getRating()));
         textDescription.setText(film.getDescription());
-    }
-
-    @Override
-    public void showError(String message) {
-
     }
 }

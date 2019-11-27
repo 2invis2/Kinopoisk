@@ -77,20 +77,24 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmHolder> {
         private final ImageView filmImageView;
         private final SelectFilmListener selectFilmListener;
 
-        FilmHolder(View view, SelectFilmListener selectBookListener) {
+        FilmHolder(View view, SelectFilmListener selectFilmListener) {
             super(view);
-            this.selectFilmListener = selectBookListener;
+            this.selectFilmListener = selectFilmListener;
             filmImageView = view.findViewById(R.id.film_image_item);
             filmNameView = view.findViewById(R.id.film_name_item);
         }
 
         void bind(final Film film) {
 
-            Picasso.get()
-                    .load(film.getImage_url())
-                    .placeholder(R.drawable.film_placeholder)
-                    .error(R.drawable.film_placeholder_error)
-                    .into(filmImageView);
+            if(film.getImage_url() != null) {
+                Picasso.get()
+                        .load(film.getImage_url())
+                        .placeholder(R.drawable.film_placeholder)
+                        .error(R.drawable.film_placeholder_error)
+                        .into(filmImageView);
+            } else {
+                filmImageView.setImageResource(R.drawable.film_placeholder_error);;
+            }
 
             filmNameView.setText(film.getLocalized_name());
 
