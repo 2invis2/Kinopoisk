@@ -2,9 +2,9 @@ package com.invis.kinopoisk.features.presenter;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseFragment extends Fragment {
 
     protected abstract <T extends MvpView> MvpPresenter<T> getPresenter();
 
@@ -13,19 +13,19 @@ public abstract class BaseActivity extends AppCompatActivity {
     private MvpPresenter<MvpView> presenter;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter = getPresenter();
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
         presenter.attachView(getMvpView());
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
         presenter.detachView();
     }

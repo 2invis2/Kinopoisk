@@ -1,4 +1,4 @@
-package com.invis.kinopoisk.features.presenter;
+package com.invis.kinopoisk.features.presenter.list;
 
 import android.content.Context;
 
@@ -8,19 +8,17 @@ import com.invis.kinopoisk.features.data.KinopoiskRepository;
 import com.invis.kinopoisk.features.data.KinopoiskRepositoryImpl;
 import com.invis.kinopoisk.features.domain.KinopoiskInteractor;
 import com.invis.kinopoisk.features.domain.KinopoiskInteractorImpl;
-import com.invis.kinopoisk.features.presenter.list.FilmsListPresenter;
 
-final class KinopoiskPresenterFactory {
+final class FilmListPresenterFactory {
 
-    static KinopoiskPresenter createPresenter(Context context) {
+    static FilmsListPresenter createPresenter(Context context) {
         final KinopoiskAPI api = App.getRetrofitProvider(context)
                 .getRetrofit()
                 .create(KinopoiskAPI.class);
 
         final KinopoiskRepository repository = new KinopoiskRepositoryImpl(api);
         final KinopoiskInteractor interactor = new KinopoiskInteractorImpl(repository);
-        final FilmsListPresenter filmsListPresenter = new FilmsListPresenter(interactor);
 
-        return new KinopoiskPresenter(interactor, filmsListPresenter);
+        return new FilmsListPresenter(interactor);
     }
 }

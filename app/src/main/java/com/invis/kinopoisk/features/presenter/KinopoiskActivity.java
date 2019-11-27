@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 
@@ -17,24 +18,11 @@ import com.invis.kinopoisk.features.Entity.Film;
 import com.invis.kinopoisk.features.presenter.description.DescriptionFragment;
 import com.invis.kinopoisk.features.presenter.list.FilmsListFragment;
 
-public class KinopoiskActivity extends BaseActivity implements KinopoiskView{
-
-    private KinopoiskPresenter kinopoiskPresenter;
+public class KinopoiskActivity extends AppCompatActivity implements KinopoiskView{
 
     private Fragment filmsListFragment;
     private Fragment descriptionFragment;
     private Toolbar toolbar;
-
-    @Override
-    protected MvpPresenter<KinopoiskView> getPresenter() {
-        kinopoiskPresenter = KinopoiskPresenterFactory.createPresenter(this);
-        return kinopoiskPresenter;
-    }
-
-    @Override
-    protected KinopoiskView getMvpView() {
-        return this;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +33,6 @@ public class KinopoiskActivity extends BaseActivity implements KinopoiskView{
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         filmsListFragment = new FilmsListFragment();
-        ((FilmsListFragment) filmsListFragment).setPresenter(kinopoiskPresenter.getFilmsListPresenter());
         fragmentTransaction.add(R.id.container, filmsListFragment)
                 .addToBackStack(null)
                 .commit();

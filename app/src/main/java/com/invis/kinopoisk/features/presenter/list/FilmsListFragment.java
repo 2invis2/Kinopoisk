@@ -3,7 +3,6 @@ package com.invis.kinopoisk.features.presenter.list;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -20,12 +19,14 @@ import android.widget.TextView;
 
 import com.invis.kinopoisk.R;
 import com.invis.kinopoisk.features.Entity.Film;
+import com.invis.kinopoisk.features.presenter.BaseFragment;
 import com.invis.kinopoisk.features.presenter.KinopoiskView;
+import com.invis.kinopoisk.features.presenter.MvpPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FilmsListFragment extends Fragment implements FilmsListView{
+public class FilmsListFragment extends BaseFragment implements FilmsListView{
 
     private final int SPAN_COUNT = 2;
     private RecyclerView recyclerView;
@@ -43,11 +44,6 @@ public class FilmsListFragment extends Fragment implements FilmsListView{
     private DrawerLayout drawer;
     private ActionBarDrawerToggle toggle;
     private ActionBarDrawerToggle mDrawerToggle;
-
-
-    public void setPresenter(FilmsListPresenter presenter){
-        filmsListPresenter = presenter;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -107,22 +103,21 @@ public class FilmsListFragment extends Fragment implements FilmsListView{
 
     }
 
+    @Override
     protected FilmsListView getMvpView(){
         return this;
     }
 
     @Override
-    public void onStart(){
-        super.onStart();
-        filmsListPresenter.attachView(getMvpView());
-
-        filmsListPresenter.loadFilmList();
+    protected MvpPresenter<FilmsListView> getPresenter() {
+        filmsListPresenter = new FilmListPresenterFactory().createPresenter(getActivity());
+        return filmsListPresenter;
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        filmsListPresenter.detachView();
+    public void onStart(){
+        super.onStart();
+        filmsListPresenter.loadFilmList();
     }
 
     @Override
