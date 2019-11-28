@@ -13,4 +13,13 @@
         android:background="@color/colorPrimary">
     </android.support.v7.widget.Toolbar>
 
+    <LinearLayout
+        android:id="@+id/container_geners"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_weight="100">
+
+    </LinearLayout>
+
 </LinearLayout>

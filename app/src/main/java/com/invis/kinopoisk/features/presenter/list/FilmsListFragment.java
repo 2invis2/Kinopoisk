@@ -1,15 +1,19 @@
 package com.invis.kinopoisk.features.presenter.list;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,12 +41,10 @@ public class FilmsListFragment extends BaseFragment implements FilmsListView{
     private Toolbar toolbar;
     private FloatingActionButton drawerButton;
     private List<String> genersList;
-    private List<TextView> genersListTexView;
+    private List<AppCompatTextView> genersListTexView;
     private List<Film> fulFilmList;
 
     private DrawerLayout mDrawerLayout;
-    private DrawerLayout drawer;
-    private ActionBarDrawerToggle toggle;
     private ActionBarDrawerToggle mDrawerToggle;
 
     @Override
@@ -66,12 +68,23 @@ public class FilmsListFragment extends BaseFragment implements FilmsListView{
         adapter = new FilmAdapter(getContext(), new FilmAdapter.SelectFilmListener() {
             @Override
             public void onFilmSelect(Film film) {
-               filmsListPresenter.onFilmSelected(film, (KinopoiskView) getActivity());
+                if(!(mDrawerLayout.isDrawerOpen(Gravity.LEFT))) {
+                    filmsListPresenter.onFilmSelected(film, (KinopoiskView) getActivity());
+                }
             }
         });
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), SPAN_COUNT));
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                if(!(mDrawerLayout.isDrawerOpen(Gravity.LEFT))){
+                    super.onScrollStateChanged(recyclerView, newState);
+                }
+                }
+        });
 
         /**<DrawerLayout>*/
         mDrawerLayout = (DrawerLayout) content.findViewById(R.id.drawer_layout);
@@ -81,16 +94,15 @@ public class FilmsListFragment extends BaseFragment implements FilmsListView{
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
                 getActivity().invalidateOptionsMenu();
+                recyclerView.setNestedScrollingEnabled(true);
             }
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 getActivity().invalidateOptionsMenu();
+                recyclerView.setNestedScrollingEnabled(false);
             }
         };
-
-        mDrawerLayout.addDrawerListener(mDrawerToggle);
-        mDrawerToggle.syncState();
 
         drawerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,6 +110,9 @@ public class FilmsListFragment extends BaseFragment implements FilmsListView{
                 mDrawerLayout.openDrawer(GravityCompat.START);
             }
         });
+
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
+        mDrawerToggle.syncState();
 
         return content;
 
@@ -134,26 +149,35 @@ public class FilmsListFragment extends BaseFragment implements FilmsListView{
 
     @Override
     public void showGeners(List<Film> filmList){
-        Toolbar toolbarDrawer = (Toolbar) content.findViewById(R.id.toolbar_drawer);
+
+        Toolbar toolbarDrawer = (Toolbar) getActivity().findViewById(R.id.toolbar_drawer);
         if (toolbarDrawer != null){
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbarDrawer);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.geners);
         }
 
-        genersList = filmsListPresenter.getGeners(filmList);
-        genersListTexView = new ArrayList<TextView>();
+        LinearLayout containerLayout = (LinearLayout) getActivity().findViewById(R.id.container_geners);
+        containerLayout.removeAllViews();
 
-        LinearLayout containerLayout = (LinearLayout) getActivity().findViewById(R.id.container_drawer);
+        genersList = filmsListPresenter.getGeners(filmList);
+
+        float weightTextView = 1f / genersList.size();
+
+        genersListTexView = new ArrayList<AppCompatTextView>();
 
         for(int i = 0; i < genersList.size(); i++){
-            genersListTexView.add(new TextView(getActivity()));
+            genersListTexView.add(new AppCompatTextView(getActivity()));
 
             containerLayout.addView(genersListTexView.get(i));
 
             genersListTexView.get(i).setPadding(20,10,10,10);
-            genersListTexView.get(i).setTextSize(15);
+
+
+            TextViewCompat.setAutoSizeTextTypeWithDefaults(genersListTexView.get(i),
+                    TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM);
+
+            //genersListTexView.get(i).setTextSize(20);
             genersListTexView.get(i).setText(genersList.get(i));
-            genersListTexView.get(i).setHeight(70);
             genersListTexView.get(i).setSelected(false);
 
             genersListTexView.get(i).setOnClickListener(new View.OnClickListener() {
@@ -183,7 +207,7 @@ public class FilmsListFragment extends BaseFragment implements FilmsListView{
                 });
 
             LinearLayout.LayoutParams textViewLayoutParams = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, weightTextView);
 
             genersListTexView.get(i).setLayoutParams(textViewLayoutParams);
         }
@@ -192,7 +216,7 @@ public class FilmsListFragment extends BaseFragment implements FilmsListView{
     @Override
     public void addFilmList(List<Film> filmList) {
         fulFilmList = filmList;
-        adapter.addFilms(filmList);
+        adapter.setFilms(filmList);
     }
 
     @Override
