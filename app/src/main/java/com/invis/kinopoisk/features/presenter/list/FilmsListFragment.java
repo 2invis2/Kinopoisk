@@ -176,7 +176,6 @@ public class FilmsListFragment extends BaseFragment implements FilmsListView{
             TextViewCompat.setAutoSizeTextTypeWithDefaults(genersListTexView.get(i),
                     TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM);
 
-            //genersListTexView.get(i).setTextSize(20);
             genersListTexView.get(i).setText(genersList.get(i));
             genersListTexView.get(i).setSelected(false);
 
